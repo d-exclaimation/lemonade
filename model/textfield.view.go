@@ -81,7 +81,7 @@ func (t TextFieldView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 // Render TextFieldView as string
 func (t TextFieldView) View() string {
 	return fmt.Sprintf(
-		"What’s your favorite Pokémon?\n\n%s\n\n%s",
+		"What’s name of the project?\n\n%s\n\n%s",
 		t.textInput.View(),
 		"(q to quit)",
 	) + "\n"
