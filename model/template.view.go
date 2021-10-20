@@ -1,5 +1,5 @@
 //
-//  template.go
+//  template.view.go
 //  model
 //
 //  Created by d-exclaimation on 10:44 PM.
@@ -14,51 +14,42 @@ import (
 	"os"
 )
 
-var choicesMap = map[string][]list.Item{
-	"scala": {
-		obj{title: "realtime-graphql", desc: "Ahql & OverLayer realtime GraphQL API"},
-		obj{title: "restful-akka", desc: "Akka HTTP Versioned RESTful API"},
-		obj{title: "scala", desc: "Stable Scala 2.13 Starter project"},
-		obj{title: "dotty", desc: "Bleeding edge Scala 3 Starter project"},
-	},
-	"go": {
-		obj{title: "gqlgen", desc: "Gqlgen GraphQL API"},
-		obj{title: "go", desc: "Regular go template"},
-	},
-	"node/typescript": {
-		obj{title: "react", desc: "Single Page React app"},
-		obj{title: "nextjs", desc: "Server Side Rendered React app"},
-		obj{title: "node", desc: "Node js Server"},
-	},
-	"elixir": {
-		obj{title: "phoenix", desc: "Phoenix MVC RESTful API"},
-	},
+// TemplatesView
+//
+// Multi-item list select rendered by Bubbles-tea.
+type TemplatesView struct {
+	list    list.Model    // Inner list component
+	choices []list.Item   // Choices given
+	project *ProjectSetup // Project to be modified
 }
 
-type Templates struct {
-	list    list.Model
-	choices []list.Item
-	project *ProjectSetup
-}
-
-func NewTemplate(project *ProjectSetup) Templates {
+// NewTemplateView
+//
+// Construct a new Template
+func NewTemplateView(project *ProjectSetup) TemplatesView {
 	choices := choicesMap[project.Lang]
 	l := NewModel(choices)
 	l.Title = "Project Template"
 	l.Styles.Title = titleStyle
-	return Templates{
+	return TemplatesView{
 		list:    l,
 		choices: choices,
 		project: project,
 	}
 }
 
-func (g Templates) Init() tea.Cmd {
+// Init
+//
+// Initial state for the bubble-tea cli
+func (g TemplatesView) Init() tea.Cmd {
 	// Just return `nil`, which means "no I/O right now, please."
 	return nil
 }
 
-func (g Templates) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+// Update
+//
+// Render update for bubble-tea
+func (g TemplatesView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 
 	case tea.WindowSizeMsg:
@@ -75,7 +66,7 @@ func (g Templates) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			os.Exit(1)
 			return g, tea.Quit
 		case tea.KeyEnter, tea.KeySpace:
-			g.project.SetTemplate(g.choices[g.list.Cursor()].FilterValue())
+			g.project.Template = g.choices[g.list.Cursor()].FilterValue()
 			return g, tea.Quit
 		}
 	}
@@ -87,6 +78,9 @@ func (g Templates) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return g, cmd
 }
 
-func (g Templates) View() string {
+// View
+//
+// Render TextFieldView as string
+func (g TemplatesView) View() string {
 	return listStyle.Render(g.list.View())
 }

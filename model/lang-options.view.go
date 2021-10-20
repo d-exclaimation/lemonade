@@ -1,5 +1,5 @@
 //
-//  lang_options.go.go
+//  lang-options.view.go.go
 //  model
 //
 //  Created by d-exclaimation on 9:11 PM.
@@ -14,13 +14,19 @@ import (
 	"os"
 )
 
-type LangOptions struct {
-	list    list.Model
-	choices []list.Item
-	project *ProjectSetup
+// LangOptionsView
+//
+// A selectable list for language choice.
+type LangOptionsView struct {
+	list    list.Model    // Inner bubble-tea list
+	choices []list.Item   // Choices for state
+	project *ProjectSetup // Project setup to be mutated
 }
 
-func LanguageOptions(project *ProjectSetup) LangOptions {
+// NewLangOptionsView
+//
+// Construct a new LangOptionsView
+func NewLangOptionsView(project *ProjectSetup) LangOptionsView {
 	choices := []list.Item{
 		obj{title: "scala", desc: "Scala (akka-http & friends), best OOP + FP Language, good for most including GraphQL"},
 		obj{title: "go", desc: "Go, lightweight practical language, good for container"},
@@ -30,19 +36,25 @@ func LanguageOptions(project *ProjectSetup) LangOptions {
 	l := NewModel(choices)
 	l.Title = "Programming language"
 	l.Styles.Title = titleStyle
-	return LangOptions{
+	return LangOptionsView{
 		list:    l,
 		choices: choices,
 		project: project,
 	}
 }
 
-func (o LangOptions) Init() tea.Cmd {
+// Init
+//
+// Initial state for the bubble-tea cli
+func (o LangOptionsView) Init() tea.Cmd {
 	// Just return `nil`, which means "no I/O right now, please."
 	return nil
 }
 
-func (o LangOptions) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+// Update
+//
+// Render update for bubble-tea
+func (o LangOptionsView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 
 	case tea.WindowSizeMsg:
@@ -60,7 +72,7 @@ func (o LangOptions) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			os.Exit(1)
 			return o, tea.Quit
 		case "enter", " ":
-			o.project.SetLang(o.choices[o.list.Cursor()].FilterValue())
+			o.project.Lang = o.choices[o.list.Cursor()].FilterValue()
 			return o, tea.Quit
 		}
 	}
@@ -72,6 +84,9 @@ func (o LangOptions) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return o, cmd
 }
 
-func (o LangOptions) View() string {
+// View
+//
+// Render TextField as string
+func (o LangOptionsView) View() string {
 	return listStyle.Render(o.list.View())
 }

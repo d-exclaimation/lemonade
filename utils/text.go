@@ -10,6 +10,7 @@ package utils
 
 import "strings"
 
+// CamelCase a string
 func CamelCase(strs []string) string {
 	res := make([]string, len(strs))
 	for i, word := range strs {
@@ -18,6 +19,7 @@ func CamelCase(strs []string) string {
 	return strings.Join(res, "")
 }
 
+// SnakeCase a string
 func SnakeCase(strs []string) string {
 	res := make([]string, len(strs))
 	for i, word := range strs {

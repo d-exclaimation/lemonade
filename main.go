@@ -14,8 +14,8 @@ import (
 
 func main() {
 	project := model.NewProject()
-	cli.Tea(model.LanguageOptions(project))
-	cli.Tea(model.NewTemplate(project))
-	cli.Tea(model.NewTextField(project))
-	project.Exec()
+	cli.Tea(model.NewLangOptionsView(project))
+	cli.Tea(model.NewTemplateView(project))
+	cli.Tea(model.NewTextFieldView(project))
+	project.Setup()
 }

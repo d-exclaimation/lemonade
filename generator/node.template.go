@@ -1,5 +1,5 @@
 //
-//  node_generator.go
+//  node.template.go
 //  generator
 //
 //  Created by d-exclaimation on 2:01 AM.
@@ -58,11 +58,9 @@ func NodeGenerator(name string) {
 		log.Fatalln(err.Error())
 		return
 	}
-	err = cli.Run("npm", "init", "-y").Wait()
-	if err != nil {
-		log.Fatalln(err.Error())
-		return
-	}
+
+	cli.Run("npm", "init", "-y")
+
 	err = cli.Move("./package.json", "./"+name+"/package.json")
 	if err != nil {
 		log.Fatalln(err.Error())

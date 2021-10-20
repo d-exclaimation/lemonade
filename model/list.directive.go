@@ -1,5 +1,5 @@
 //
-//  custom_list.go.go
+//  list.directive.go.go
 //  model
 //
 //  Created by d-exclaimation on 10:30 PM.

@@ -1,5 +1,5 @@
 //
-//  loading.go
+//  loading.view.go
 //  model
 //
 //  Created by d-exclaimation on 11:52 PM.
@@ -9,42 +9,46 @@
 package model
 
 import (
-	"github.com/d-exclaimation/lemonade/utils"
+	"github.com/d-exclaimation/lemonade/future"
 	"os"
 	"strings"
 	"time"
 
 	"github.com/charmbracelet/bubbles/progress"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 )
 
-const (
-	padding  = 2
-	maxWidth = 80
-)
-
-var helpStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#626262")).Render
-
-type tickMsg time.Time
-
-type Loading struct {
-	progress progress.Model
-	await    *utils.Await
+// LoadingView
+//
+// Progress indicator that wait for a process to finish
+type LoadingView struct {
+	progress progress.Model // Inner animated progress bar
+	await    *future.Await  // Await to check progress on process
+	scale    float64        // Scala in which percentage increases
 }
 
-func NewLoading(op func()) Loading {
-	return Loading{
+// NewLoadingView
+//
+// Construct a new LoadingView
+func NewLoadingView(op func()) LoadingView {
+	return LoadingView{
 		progress: progress.NewModel(progress.WithDefaultGradient()),
-		await:    utils.Wait(op),
+		await:    future.Wait(op),
+		scale:    0.25,
 	}
 }
 
-func (m Loading) Init() tea.Cmd {
-	return tickCmd()
+// Init
+//
+// Initial state for the bubble-tea cli
+func (m LoadingView) Init() tea.Cmd {
+	return ticking()
 }
 
-func (m Loading) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+// Update
+//
+// Render update for bubble-tea
+func (m LoadingView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		os.Exit(1)
@@ -57,7 +61,7 @@ func (m Loading) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		return m, nil
 
-	case tickMsg:
+	case time.Time:
 		if m.progress.Percent() == 1.0 {
 			return m, tea.Quit
 		}
@@ -66,11 +70,13 @@ func (m Loading) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		if m.await.IsDone() {
 			cmd = m.progress.SetPercent(1.0)
-		} else if m.progress.Percent() < 1.0-0.3 {
-			cmd = m.progress.IncrPercent(0.25)
+		} else if m.progress.Percent() < 1.0-(m.scale+0.1) {
+			cmd = m.progress.IncrPercent(m.scale)
 		}
 
-		return m, tea.Batch(tickCmd(), cmd)
+		m.scale *= 0.75
+
+		return m, tea.Batch(ticking(), cmd)
 
 	case progress.FrameMsg:
 		progressModel, cmd := m.progress.Update(msg)
@@ -82,15 +88,19 @@ func (m Loading) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 }
 
-func (m Loading) View() string {
+// View
+//
+// Render TextField as string
+func (m LoadingView) View() string {
 	pad := strings.Repeat(" ", padding)
 	return "\n" +
 		pad + m.progress.View() + "\n\n" +
 		pad + helpStyle("Press any key to quit")
 }
 
-func tickCmd() tea.Cmd {
+// Ticking function
+func ticking() tea.Cmd {
 	return tea.Tick(time.Second*1, func(t time.Time) tea.Msg {
-		return tickMsg(t)
+		return t
 	})
 }

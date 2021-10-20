@@ -1,5 +1,5 @@
 //
-//  textfield.go
+//  textfield.view.go
 //  model
 //
 //  Created by d-exclaimation on 11:39 PM.
@@ -15,33 +15,43 @@ import (
 	"os"
 )
 
-type errMsg error
-
-type TextField struct {
-	textInput textinput.Model
-	err       error
-	project   *ProjectSetup
+// TextFieldView
+//
+// CLI TextFieldView
+type TextFieldView struct {
+	textInput textinput.Model // Text input from the Bubble-tea CLI
+	err       error           // Saved error
+	project   *ProjectSetup   // Project setup to be modified
 }
 
-func NewTextField(project *ProjectSetup) TextField {
+// NewTextFieldView
+//
+// Create a new TextFieldView
+func NewTextFieldView(project *ProjectSetup) TextFieldView {
 	ti := textinput.NewModel()
 	ti.Placeholder = "example-app"
 	ti.Focus()
 	ti.CharLimit = 156
 	ti.Width = 20
 
-	return TextField{
+	return TextFieldView{
 		textInput: ti,
 		err:       nil,
 		project:   project,
 	}
 }
 
-func (t TextField) Init() tea.Cmd {
+// Init
+//
+// Initial state for the bubble-tea cli
+func (t TextFieldView) Init() tea.Cmd {
 	return textinput.Blink
 }
 
-func (t TextField) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+// Update
+//
+// Render update for bubble-tea
+func (t TextFieldView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 
 	switch msg := msg.(type) {
@@ -50,13 +60,14 @@ func (t TextField) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case tea.KeyCtrlC, 51, 67:
 			os.Exit(1)
 			return t, tea.Quit
+
 		case tea.KeyEnter, tea.KeySpace:
-			t.project.SetName(t.textInput.Value())
+			t.project.Name = t.textInput.Value()
 			return t, tea.Quit
 		}
 
 	// We handle errors just like any other message
-	case errMsg:
+	case error:
 		t.err = msg
 		return t, nil
 	}
@@ -65,7 +76,10 @@ func (t TextField) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return t, cmd
 }
 
-func (t TextField) View() string {
+// View
+//
+// Render TextFieldView as string
+func (t TextFieldView) View() string {
 	return fmt.Sprintf(
 		"What’s your favorite Pokémon?\n\n%s\n\n%s",
 		t.textInput.View(),

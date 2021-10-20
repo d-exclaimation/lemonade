@@ -1,5 +1,5 @@
 //
-//  go_generator.go.go
+//  golang.template.go.go
 //  generator
 //
 //  Created by d-exclaimation on 12:51 AM.
@@ -80,11 +80,9 @@ func GoTemplate(name string) {
 		log.Fatalln(err.Error())
 		return
 	}
-	err = cli.Run("go", "mod", "init", "github.com/d-exclaimation/"+name).Wait()
-	if err != nil {
-		log.Fatalln(err.Error())
-		return
-	}
+
+	cli.Run("go", "mod", "init", "github.com/d-exclaimation/"+name)
+
 	err = cli.Move("./go.mod", "./"+name+"/go.mod")
 	if err != nil {
 		log.Fatalln(err.Error())

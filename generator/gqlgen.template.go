@@ -1,5 +1,5 @@
 //
-//  gqlgen_generator.go
+//  gqlgen.template.go
 //  generator
 //
 //  Created by d-exclaimation on 1:20 AM.
@@ -16,7 +16,7 @@ import (
 
 const (
 	basicSchema = "type Query {\n" +
-		"hello: String!\n" +
+		"  hello: String!\n" +
 		"}"
 
 	basicYml = "# Where are all the schema files located? globs are supported eg  src/**/*.graphqls\n" +

@@ -1,5 +1,5 @@
 //
-//  obj.go
+//  obj.entity.go
 //  model
 //
 //  Created by d-exclaimation on 10:48 PM.
@@ -8,8 +8,9 @@
 
 package model
 
+// Object type for the Bubbles' List item
 type obj struct {
-	title, desc string
+	title, desc string // Title and description
 }
 
 func (i obj) Title() string       { return i.title }

@@ -16,6 +16,9 @@ import (
 	"os/exec"
 )
 
+// Tea
+//
+// Execute a model in Bubble-tea CLI
 func Tea(model tea.Model) {
 	p1 := tea.NewProgram(model, tea.WithAltScreen())
 	if err := p1.Start(); err != nil {
@@ -24,9 +27,12 @@ func Tea(model tea.Model) {
 	}
 }
 
+// Run
+//
+// Execute `/bin/sh` command but not wait for it.
 func Run(s string, arg ...string) *exec.Cmd {
 	cmd := exec.Command(s, arg...)
-	if err := cmd.Start(); err != nil {
+	if err := cmd.Run(); err != nil {
 		log.Fatalln(err.Error())
 		return nil
 	}
