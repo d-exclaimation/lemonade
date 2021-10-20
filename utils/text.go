@@ -27,3 +27,7 @@ func SnakeCase(strs []string) string {
 	}
 	return strings.Join(res, "_")
 }
+
+func P(lines ...string) string {
+	return strings.Join(lines[1:], "\n")
+}

@@ -10,68 +10,80 @@ package generator
 
 import (
 	"github.com/d-exclaimation/lemonade/cli"
+	"github.com/d-exclaimation/lemonade/config"
+	"github.com/d-exclaimation/lemonade/utils"
 	"log"
 	"os"
 )
 
-const (
-	dockergo = "FROM golang:1.17.2-alpine3.14 as compiler\n" +
-		"\n" +
-		"RUN mkdir /app\n" +
-		"WORKDIR /app\n" +
-		"\n" +
-		"COPY go.mod ./\n" +
-		"COPY go.sum ./\n" +
-		"\n" +
-		"RUN go mod download\n" +
-		"\n" +
-		"COPY . .\n" +
-		"\n" +
-		"RUN go build -o main .\n" +
-		"\n" +
-		"FROM golang:1.17.2-alpine3.14\n" +
-		"\n" +
-		"COPY --from=compiler /app/main ./app/main\n" +
-		"\n" +
-		"ENV GO_ENV production\n" +
-		"\n" +
-		"CMD [ \"/app/main\" ]"
+var (
+	dockerGo = utils.P("",
+		"FROM golang:"+config.GoVersion+"-alpine3.14 as compiler",
+		"",
+		"RUN mkdir /app",
+		"WORKDIR /app",
+		"",
+		"COPY go.mod ./",
+		"COPY go.sum ./",
+		"",
+		"RUN go mod download",
+		"",
+		"COPY . .",
+		"",
+		"RUN go build -o main .",
+		"",
+		"FROM golang:"+config.GoVersion+"-alpine3.14",
+		"",
+		"COPY --from=compiler /app/main ./app/main",
+		"",
+		"ENV GO_ENV production",
+		"",
+		"CMD [ \"/app/main\" ]",
+	)
 
-	gitignore = "# Logs\n" +
-		"logs\n" +
-		"*.log\n" +
-		"\n" +
-		"# Env\n" +
-		".env\n" +
-		"\n" +
-		"# OS\n" +
-		".DS_Store\n" +
-		"\n# Tests\n" +
-		"/coverage\n" +
-		"\n# IDEs\n" +
-		"/.idea\n" +
-		".project\n" +
-		"/.vscode"
+	gitignore = utils.P("",
+		"# Logs",
+		"logs",
+		"*.log",
+		"",
+		"# Env",
+		".env",
+		"",
+		"# OS",
+		".DS_Store",
+		"",
+		"# Tests",
+		"/coverage",
+		"",
+		"# IDEs",
+		"/.idea",
+		".project",
+		"/.vscode",
+	)
 
-	dockerignore = "passphrase.txt\n" +
-		".gitignore\n" +
-		".env\n" +
-		".idea/\n" +
-		"logs/\n" +
-		".git/\n" +
-		"*.md\n" +
-		".cache"
+	dockerignore = utils.P("",
+		"passphrase.txt",
+		".gitignore",
+		".env",
+		".idea/",
+		"logs/",
+		".git/",
+		"*.md",
+		".cache",
+	)
 )
 
 func header(name string) string {
-	return "//\n" +
-		"// main.go\n" +
-		"// " + name + "\n" +
-		"//\n" +
-		"// Created by d-exclaimation on 00:00.\n" +
-		"//\n" +
-		"\n" +
-		"package main"
+	return utils.P("",
+		"//",
+		"// main.go",
+		"// "+name+"",
+		"//",
+		"// Created by "+config.GithubName+" on 00:00.",
+		"//",
+		"",
+		"package main",
+	)
 }
 
 func GoTemplate(name string) {
@@ -81,7 +93,7 @@ func GoTemplate(name string) {
 		return
 	}
 
-	cli.Run("go", "mod", "init", "github.com/d-exclaimation/"+name)
+	cli.Run("go", "mod", "init", "github.com/"+config.GithubName+"/"+name)
 
 	err = cli.Move("./go.mod", "./"+name+"/go.mod")
 	if err != nil {
@@ -94,7 +106,7 @@ func GoTemplate(name string) {
 		log.Fatalln(err.Error())
 		return
 	}
-	err = cli.Write("./"+name+"/Dockerfile", dockergo)
+	err = cli.Write("./"+name+"/Dockerfile", dockerGo)
 	if err != nil {
 		log.Fatalln(err.Error())
 		return

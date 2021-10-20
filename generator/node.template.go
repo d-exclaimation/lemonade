@@ -10,46 +10,61 @@ package generator
 
 import (
 	"github.com/d-exclaimation/lemonade/cli"
+	"github.com/d-exclaimation/lemonade/config"
+	"github.com/d-exclaimation/lemonade/utils"
 	"log"
 	"os"
 )
 
-const dockerNode = "FROM node:current-alpine3.11 as builder\n" +
-	"\n" +
-	"RUN mkdir /app\n" +
-	"WORKDIR /app\n" +
-	"\n" +
-	"COPY package.json ./\n" +
-	"COPY yarn.lock ./\n" +
-	"COPY prisma ./prisma/\n" +
-	"\n" +
-	"RUN yarn install --production\n" +
-	"\n" +
-	"COPY . .\n" +
-	"\n" +
-	"RUN yarn build\n" +
-	"\n" +
-	"FROM node:current-alpine3.11\n" +
-	"\n" +
-	"COPY --from=builder /app/node_modules ./node_modules\n" +
-	"COPY --from=builder /app/package*.json ./\n" +
-	"COPY --from=builder /app/dist ./dist\n" +
-	"\n" +
-	"ENV NODE_ENV production\n" +
-	"\n" +
-	"CMD [ \"yarn\", \"start\" ]"
+var (
+	usePrisma = func() string {
+		if config.NodeUsePrisma {
+			return "COPY prisma ./prisma/"
+		}
+		return ""
+	}()
+
+	dockerNode = utils.P("",
+		"FROM node:current-alpine3.11 as builder",
+		"",
+		"RUN mkdir /app",
+		"WORKDIR /app",
+		"",
+		"COPY package.json ./",
+		"COPY yarn.lock ./",
+		usePrisma,
+		"",
+		"RUN yarn install --production",
+		"",
+		"COPY . .",
+		"",
+		"RUN yarn build",
+		"",
+		"FROM node:current-alpine3.11",
+		"",
+		"COPY --from=builder /app/node_modules ./node_modules",
+		"COPY --from=builder /app/package*.json ./",
+		"COPY --from=builder /app/dist ./dist",
+		"",
+		"ENV NODE_ENV production",
+		"",
+		"CMD [ \"yarn\", \"start\" ]",
+	)
+)
 
 func index(name string) string {
-	return "//\n" +
-		"// index.ts\n" +
-		"// " + name + "\n" +
-		"//\n" +
-		"// Created by d-exclaimation on 00:00.\n" +
-		"//\n" +
-		"\n" +
-		"async function main() {}\n" +
-		"\n" +
-		"main();"
+	return utils.P("",
+		"//",
+		"// index.ts",
+		"// "+name+"",
+		"//",
+		"// Created by "+config.GithubName+" on 00:00.",
+		"//",
+		"",
+		"async function main() {}",
+		"",
+		"main();",
+	)
 }
 
 func NodeGenerator(name string) {

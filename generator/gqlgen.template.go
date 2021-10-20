@@ -10,68 +10,75 @@ package generator
 
 import (
 	"github.com/d-exclaimation/lemonade/cli"
+	"github.com/d-exclaimation/lemonade/utils"
 	"log"
 	"os"
 )
 
-const (
-	basicSchema = "type Query {\n" +
-		"  hello: String!\n" +
-		"}"
+var (
+	basicSchema = utils.P("",
+		"type Query {",
+		"  hello: String!",
+		"}",
+	)
 
-	basicYml = "# Where are all the schema files located? globs are supported eg  src/**/*.graphqls\n" +
-		"schema:\n" +
-		"  - gql/*.graphqls\n" +
-		"  - gql/*.graphql\n" +
-		"\n" +
-		"# Where should the generated server code go?\n" +
-		"exec:\n" +
-		"  filename: gql/gqlcore/generated.go\n" +
-		"  package: gqlcore\n" +
-		"\n" +
-		"# Where should any generated models go?\n" +
-		"model:\n" +
-		"  filename: gql/model/models_gen.go\n" +
-		"  package: model\n" +
-		"\n" +
-		"# Where should the resolver implementations go?\n" +
-		"resolver:\n" +
-		"  layout: follow-schema\n" +
-		"  dir: gql\n" +
-		"  package: gql\n" +
-		"\n" +
-		"# Optional: turn on use gqlgen tags in your models\n" +
-		"# struct_tag: json\n" +
-		"\n" +
-		"# Optional: turn on to use []Thing instead of []*Thing\n" +
-		"# omit_slice_element_pointers: false\n" +
-		"\n" +
-		"# Optional: set to speed up generation time by not performing a final validation pass.\n" +
-		"# skip_validation: true\n" +
-		"\n" +
-		"# gqlgen will search for any type names in the schema in these go packages\n" +
-		"# if they match it will use them, otherwise it will generate them.\n" +
-		"autobind:\n" +
-		"  - \"github.com/d-exclaimation/$name/gql/model\"\n" +
-		"\n" +
-		"# This section declares type mapping between the GraphQL and go type systems\n" +
-		"#\n" +
-		"# The first line in each type will be used as defaults for resolver arguments and\n" +
-		"# modelgen, the others will be allowed when binding to fields. Configure them to\n" +
-		"# your liking\n" +
-		"models:\n" +
-		"  ID:\n" +
-		"    model:\n" +
-		"      - github.com/99designs/gqlgen/graphql.ID\n" +
-		"      - github.com/99designs/gqlgen/graphql.Int64\n" +
-		"      - github.com/99designs/gqlgen/graphql.IntID\n" +
-		"  Int:\n" +
-		"    model:\n" +
-		"      - github.com/99designs/gqlgen/graphql.Int\n" +
-		"      - github.com/99designs/gqlgen/graphql.Int64\n" +
-		"      - github.com/99designs/gqlgen/graphql.Int32"
+	basicYml = utils.P("",
+		"# Where are all the schema files located? globs are supported eg  src/**/*.graphqls",
+		"schema:",
+		"  - gql/*.graphqls",
+		"  - gql/*.graphql",
+		"",
+		"# Where should the generated server code go?",
+		"exec:",
+		"  filename: gql/gqlcore/generated.go",
+		"  package: gqlcore",
+		"",
+		"# Where should any generated models go?",
+		"model:",
+		"  filename: gql/model/models_gen.go",
+		"  package: model",
+		"",
+		"# Where should the resolver implementations go?",
+		"resolver:",
+		"  layout: follow-schema",
+		"  dir: gql",
+		"  package: gql",
+		"",
+		"# Optional: turn on use gqlgen tags in your models",
+		"# struct_tag: json",
+		"",
+		"# Optional: turn on to use []Thing instead of []*Thing",
+		"# omit_slice_element_pointers: false",
+		"",
+		"# Optional: set to speed up generation time by not performing a final validation pass.",
+		"# skip_validation: true",
+		"",
+		"# gqlgen will search for any type names in the schema in these go packages",
+		"# if they match it will use them, otherwise it will generate them.",
+		"autobind:",
+		"  - github.com/d-exclaimation/$name/gql/model\"\n",
+		"",
+		"# This section declares type mapping between the GraphQL and go type systems",
+		"#",
+		"# The first line in each type will be used as defaults for resolver arguments and",
+		"# modelgen, the others will be allowed when binding to fields. Configure them to",
+		"# your liking",
+		"models:",
+		"  ID:",
+		"    model:",
+		"      - github.com/99designs/gqlgen/graphql.ID",
+		"      - github.com/99designs/gqlgen/graphql.Int64",
+		"      - github.com/99designs/gqlgen/graphql.IntID",
+		"  Int:",
+		"    model:",
+		"      - github.com/99designs/gqlgen/graphql.Int",
+		"      - github.com/99designs/gqlgen/graphql.Int64",
+		"      - github.com/99designs/gqlgen/graphql.Int32",
+	)
 
-	initModel = "package model"
+	initModel = utils.P("",
+		"package model",
+	)
 )
 
 func GqlgenTemplate(name string) {
