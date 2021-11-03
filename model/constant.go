@@ -46,4 +46,7 @@ var choicesMap = map[string][]list.Item{
 	"elixir": {
 		obj{title: "phoenix", desc: "Phoenix MVC RESTful API"},
 	},
+	"swift": {
+		obj{title: "executable", desc: "Swift MacOSX/Linux Executable (commonly for server)"},
+	},
 }

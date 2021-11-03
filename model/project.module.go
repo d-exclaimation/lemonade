@@ -94,6 +94,14 @@ func (p *ProjectSetup) Setup() {
 			p.loading("mix", "phx.new", snakeCase, "--no-webpack", "--no-html", "--no-gettext", "--binary-id")
 		}
 
+	case "swift":
+		switch p.Template {
+		case "executable":
+			cli.Tea(NewLoadingView(func() {
+				generator.SwiftGenerator(p.Name)
+			}))
+		}
+
 	default:
 		cli.Tea(NewLoadingView(func() {
 			cli.Run("echo 'Done!!'")

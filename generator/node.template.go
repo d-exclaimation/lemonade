@@ -74,19 +74,7 @@ func NodeGenerator(name string) {
 		return
 	}
 
-	cli.Run("npm", "init", "-y")
-
-	err = cli.Move("./package.json", "./"+name+"/package.json")
-	if err != nil {
-		log.Fatalln(err.Error())
-		return
-	}
-
-	err = os.Mkdir("./"+name+"/src", 0755)
-	if err != nil {
-		log.Fatalln(err.Error())
-		return
-	}
+	cli.RunUnder(name, "npm", "init", "-y")
 	err = cli.Write("./"+name+"/src/index.ts", index(name))
 	if err != nil {
 		log.Fatalln(err.Error())

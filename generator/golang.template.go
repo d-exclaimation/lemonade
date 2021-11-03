@@ -70,6 +70,9 @@ var (
 		".git/",
 		"*.md",
 		".cache",
+		"build/",
+		".build/",
+		"./build-docs",
 	)
 )
 
@@ -93,13 +96,7 @@ func GoTemplate(name string) {
 		return
 	}
 
-	cli.Run("go", "mod", "init", "github.com/"+config.GithubName+"/"+name)
-
-	err = cli.Move("./go.mod", "./"+name+"/go.mod")
-	if err != nil {
-		log.Fatalln(err.Error())
-		return
-	}
+	cli.RunUnder(name, "go", "mod", "init", "github.com/"+config.GithubName+"/"+name)
 
 	err = cli.Write("./"+name+"/main.go", header(name))
 	if err != nil {

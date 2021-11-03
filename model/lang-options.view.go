@@ -32,6 +32,7 @@ func NewLangOptionsView(project *ProjectSetup) LangOptionsView {
 		obj{title: "go", desc: "Go, lightweight practical language, good for container"},
 		obj{title: "node/typescript", desc: "Node.js Typescript, simple, easy to use language, good for small project"},
 		obj{title: "elixir", desc: "Elixir, concurrent focused language, good for websocket but lack computation speed"},
+		obj{title: "swift", desc: "Swift, sophisticated, premium, newly concurrent focused language"},
 	}
 	l := NewModel(choices)
 	l.Title = "Programming language"

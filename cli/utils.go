@@ -39,6 +39,24 @@ func Run(s string, arg ...string) *exec.Cmd {
 	return cmd
 }
 
+// RunUnder
+//
+// Execute `/bin/sh` command but not wait for it.
+func RunUnder(directory, s string, arg ...string) *exec.Cmd {
+	dir, err := os.Getwd()
+	if err != nil {
+		log.Fatalln(err.Error())
+		return nil
+	}
+	cmd := exec.Command(s, arg...)
+	cmd.Dir = dir + "/" + directory
+	if err := cmd.Run(); err != nil {
+		log.Fatalln(err.Error())
+		return nil
+	}
+	return cmd
+}
+
 func Write(name string, content string) error {
 	f, err := os.Create(name)
 	defer f.Close()
