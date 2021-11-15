@@ -28,11 +28,11 @@ type LangOptionsView struct {
 // Construct a new LangOptionsView
 func NewLangOptionsView(project *ProjectSetup) LangOptionsView {
 	choices := []list.Item{
-		obj{title: "scala", desc: "Scala, OOP + FP, swiss army knife-like language. Great for a lot but heavier than most"},
-		obj{title: "go", desc: "Go, lightweight practical language, good for container"},
-		obj{title: "node/typescript", desc: "Node.js Typescript, simple, easy to use language, good for small project"},
-		obj{title: "elixir", desc: "Elixir, concurrent focused language, good for websocket but lack computation speed"},
-		obj{title: "swift", desc: "Swift, sophisticated, premium, newly concurrent focused language"},
+		obj{title: "scala", desc: "OOP + FP Languages, Nice language feature on JVM but heavier than others"},
+		obj{title: "go", desc: "Practical, structured, simple, fast"},
+		obj{title: "node/typescript", desc: "Simple, easy, cleaner compared to Go but slower and less powerful"},
+		obj{title: "elixir", desc: "Concurrent focused language, good for websocket but lack computation speed"},
+		obj{title: "swift", desc: "Sophisticated, premium-feeling, newly concurrent focused language"},
 	}
 	l := NewModel(choices)
 	l.Title = "Programming language"
