@@ -17,7 +17,7 @@ import (
 )
 
 func dockerSwift(name string) string {
-	return utils.P(""+
+	return utils.P("",
 		"FROM swift:latest as builder",
 		"WORKDIR /root",
 		"COPY . .",
