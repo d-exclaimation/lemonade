@@ -50,11 +50,7 @@ lemonade
 
 2. Choose the programming language of choice
 
-<img src="static/images/languages.png" height="350" />
-
 3. Choose the available template
-
-<img src="static/images/templates.png" height="250" />
 
 4. Name the project
 
