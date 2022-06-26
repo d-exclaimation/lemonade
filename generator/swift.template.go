@@ -24,9 +24,8 @@ func dockerSwift(name string) string {
 		"RUN swift build -c release",
 		"",
 		"FROM swift:slim",
-		"WORKDIR /root",
-		"COPY --from=builder /root .",
-		fmt.Sprintf("CMD [\".build/x86_64-unknown-linux/release/%s\"]", name),
+		"COPY --from=builder /root/.build build",
+		fmt.Sprintf("CMD [\"build/release/%s\"]", name),
 	)
 }
 
