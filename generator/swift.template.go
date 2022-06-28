@@ -20,6 +20,8 @@ func dockerSwift(name string) string {
 	return utils.P("",
 		"FROM swift:latest as builder",
 		"WORKDIR /root",
+        "COPY ./Package.* ./",
+        "RUN swift package resolve",
 		"COPY . .",
 		"RUN swift build -c release",
 		"",
